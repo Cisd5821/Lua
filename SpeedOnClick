@@ -1,0 +1,33 @@
+local plr = game.Players.LocalPlayer
+local playerGui = plr:WaitForChild("PlayerGui") -- Use PlayerGui to access the active GUI
+local main = playerGui:WaitForChild("Main") -- Assuming 'Main' is the name of your ScreenGui or Frame
+local leftSide = main:WaitForChild("LeftSide")
+
+-- Reference to the TextLabel to display the speed
+local speedLabel = leftSide:WaitForChild("Speed") -- Replace 'SpeedLabel' with the actual name of your TextLabel
+
+-- Wait for the player's character and humanoid to be ready
+local character = plr.Character or plr.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Function to increase or decrease WalkSpeed and update the TextLabel
+local function adjustWalkSpeed(amount)
+	humanoid.WalkSpeed = humanoid.WalkSpeed + amount
+	-- Update the TextLabel to show the new WalkSpeed
+	speedLabel.Text = "Speed: " .. humanoid.WalkSpeed
+end
+
+-- Loop through all buttons under the leftSide
+for _, button in pairs(leftSide:GetChildren()) do
+	if button:IsA("TextButton") then
+		-- Extract the sign and number from the button's name (e.g., +100 or -50)
+		local changeAmount = tonumber(button.Name:match("[+-]%d+"))
+
+		-- If the button's name contains a valid signed number, connect the click event
+		if changeAmount then
+			button.MouseButton1Click:Connect(function()
+				adjustWalkSpeed(changeAmount)
+			end)
+		end
+	end
+end
